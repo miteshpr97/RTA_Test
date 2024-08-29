@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        #checkbox-container {
+            padding: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        h2 {
+            text-align: center;
+            margin: 20px 0;
+            font-size: 1.5rem;
+        }
+
+        label {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        input[type="checkbox"] {
+            margin-right: 10px;
+            transform: scale(1.2);
+        }
+
+        #selected-name {
+            text-align: center;
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        button {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        @media (max-width: 600px) {
+            h2 {
+                font-size: 1.2rem;
+            }
+
+            label {
+                font-size: 0.9rem;
+            }
+
+            #selected-name {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <h2>Cookpit Type</h2>
+    <div id="checkbox-container"></div>
+    <p id="selected-name"></p>
+    <button onclick="startVoiceRecognition()">Start Voice Recognition</button>
+
+    <script>
+        async function fetchBusTypeData() {
+            try {
+                const response = await fetch("./data.json");
+                const data = await response.json();
+                console.log(data, "show data");
+
+                const container = document.getElementById('checkbox-container');
+                const selectedName = document.getElementById('selected-name');
+
+                data.forEach(item => {
+                    const label = document.createElement('label');
+                    label.style.display = 'block';
+
+                    const checkbox = document.createElement('input');
+                    checkbox.type = 'checkbox';
+                    checkbox.id = item.BusTypeID;
+                    checkbox.name = 'inspectionType';
+                    checkbox.value = item.BusType;
+
+                    checkbox.addEventListener('click', () => {
+                        document.querySelectorAll('input[name="inspectionType"]').forEach(cb => {
+                            if (cb !== checkbox) cb.checked = false;
+                        });
+
+                        selectedName.textContent = `Selected: ${checkbox.value}`;
+                    });
+
+                    label.appendChild(checkbox);
+                    label.appendChild(document.createTextNode(` ${item.BusType}`));
+
+                    container.appendChild(label);
+                });
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            }
+        }
+
+        // function startVoiceRecognition() {
+        //     // Check if the browser supports Speech Recognition
+        //     if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+        //         alert('Your browser does not support voice recognition.');
+        //         return;
+        //     }
+
+        //     // Initialize Speech Recognition
+        //     const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+        //     recognition.lang = 'en-US'; // Set language
+
+        //     recognition.onstart = () => {
+        //         console.log('Voice recognition started. Try speaking.');
+        //     };
+
+        //     recognition.onresult = (event) => {
+        //         const speechResult = event.results[0][0].transcript.toLowerCase();
+        //         console.log(`Recognized: ${speechResult}`);
+
+        //         // Find and select the checkbox that matches the spoken input
+        //         document.querySelectorAll('input[name="inspectionType"]').forEach(checkbox => {
+        //             if (checkbox.value.toLowerCase() === speechResult) {
+        //                 checkbox.checked = true;
+
+        //                 // Deselect other checkboxes
+        //                 document.querySelectorAll('input[name="inspectionType"]').forEach(cb => {
+        //                     if (cb !== checkbox) cb.checked = false;
+        //                 });
+
+        //                 // Update the selected name
+        //                 document.getElementById('selected-name').textContent = `Selected: ${checkbox.value}`;
+        //             }
+        //         });
+        //     };
+
+        //     recognition.onerror = (event) => {
+        //         console.error('Error occurred in recognition: ', event.error);
+        //     };
+
+        //     recognition.onend = () => {
+        //         console.log('Voice recognition ended.');
+        //     };
+
+        //     // Start listening for voice input
+        //     recognition.start();
+        // }
+
+
+        
+        function startVoiceRecognition() {
+            // Check if the browser supports Speech Recognition
+            if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+                alert('Your browser does not support voice recognition.');
+                return;
+            }
+
+            // Initialize Speech Recognition
+            const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+            recognition.lang = 'en-US'; // Set language
+
+            recognition.onstart = () => {
+                console.log('Voice recognition started. Try speaking.');
+            };
+
+            recognition.onresult = (event) => {
+                const speechResult = event.results[0][0].transcript.toLowerCase().trim();
+                console.log(`Recognized: "${speechResult}"`);
+
+                // Function to clean up and normalize strings
+                function normalizeString(str) {
+                    return str.toLowerCase().trim().replace(/[^\w\s]/g, ''); // Remove punctuation
+                }
+
+                // Find and select the checkbox that matches the spoken input (case-insensitive)
+                let matchedCheckbox = false; // Track if a match was found
+                document.querySelectorAll('input[name="inspectionType"]').forEach(checkbox => {
+                    if (normalizeString(checkbox.value) === normalizeString(speechResult)) { // Case-insensitive comparison
+                        checkbox.checked = true;
+                        matchedCheckbox = true;
+
+                        // Deselect other checkboxes
+                        document.querySelectorAll('input[name="inspectionType"]').forEach(cb => {
+                            if (cb !== checkbox) cb.checked = false;
+                        });
+
+                        // Update the selected name
+                        document.getElementById('selected-name').textContent = `Selected: ${checkbox.value}`;
+                    }
+                });
+
+                if (!matchedCheckbox) {
+                    alert(`No match found for "${speechResult}". Please try again.`);
+                }
+            };
+
+            recognition.onerror = (event) => {
+                console.error('Error occurred in recognition: ', event.error);
+                alert('An error occurred with voice recognition. Please try again.');
+            };
+
+            recognition.onend = () => {
+                console.log('Voice recognition ended.');
+            };
+
+            // Start listening for voice input
+            recognition.start();
+        }
+
+        fetchBusTypeData();
+    </script>
+</body>
+
+</html>
