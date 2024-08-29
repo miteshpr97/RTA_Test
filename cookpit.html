@@ -5,6 +5,62 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
+    <style>
+        /* Basic reset */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Container styling */
+        #checkbox-container {
+            padding: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        h2 {
+            text-align: center;
+            margin: 20px 0;
+            font-size: 1.5rem;
+        }
+
+        label {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        input[type="checkbox"] {
+            margin-right: 10px;
+            transform: scale(1.2);
+        }
+
+        #selected-name {
+            text-align: center;
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 600px) {
+            h2 {
+                font-size: 1.2rem;
+            }
+
+            label {
+                font-size: 0.9rem;
+            }
+
+            #selected-name {
+                font-size: 1rem;
+            }
+        }
+    </style>
 </head>
 
 <body>
@@ -26,7 +82,6 @@
                     const label = document.createElement('label');
                     label.style.display = 'block'; 
 
-                  
                     const checkbox = document.createElement('input');
                     checkbox.type = 'checkbox';
                     checkbox.id = item.BusTypeID;
@@ -34,16 +89,13 @@
                     checkbox.value = item.BusType;
 
                     checkbox.addEventListener('click', () => {
-                    
                         document.querySelectorAll('input[name="inspectionType"]').forEach(cb => {
                             if (cb !== checkbox) cb.checked = false;
                         });
 
-                     
                         selectedName.textContent = `Selected: ${checkbox.value}`;
                     });
 
-             
                     label.appendChild(checkbox);
                     label.appendChild(document.createTextNode(` ${item.BusType}`));
 
@@ -54,7 +106,6 @@
             }
         }
 
-    
         fetchBusTypeData();
     </script>
 </body>
