@@ -1,0 +1,42 @@
+<!-- <!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <h2>Burger Type</h2>
+    <h4>
+        <input type="checkbox" id="Double" name="inspectionType" value="Double"> Double
+    </h4>
+    <h4>
+        <input type="checkbox" id="Standard" name="inspectionType" value="Standard"> Standard
+    </h4>
+    <h4>
+        <input type="checkbox" id="Articulated" name="inspectionType" value="Articulated"> Articulated
+    </h4>
+
+    <h4>
+        <input type="checkbox" id="Metrolink" name="inspectionType" value="Metrolink"> Metrolink
+    </h4>
+
+    <script>
+        async function fetchBusTypeData() {
+            try {
+                const response = await fetch("http://localhost:1433/api/busType/get");
+                const data = await response.json();
+                console.log(data, "show data");
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            }
+        }
+
+        // Call the function to fetch the data
+        fetchBusTypeData();
+    </script>
+</body>
+
+</html> -->

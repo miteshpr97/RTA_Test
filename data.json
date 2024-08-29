@@ -1,0 +1,18 @@
+[
+    {
+        "BusTypeID": "BT001",
+        "BusType": "Double"
+    },
+    {
+        "BusTypeID": "BT002",
+        "BusType": "Standard"
+    },
+    {
+        "BusTypeID": "BT003",
+        "BusType": "Articulated"
+    },
+    {
+        "BusTypeID": "BT004",
+        "BusType": "MetroLink"
+    }
+]

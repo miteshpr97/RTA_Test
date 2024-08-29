@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+    <h2>Cookpit Type</h2>
+    <div id="checkbox-container"></div>
+    <p id="selected-name"></p> 
+
+    <script>
+        async function fetchBusTypeData() {
+            try {
+                const response = await fetch("./data.json");
+                const data = await response.json();
+                console.log(data, "show data");
+
+                const container = document.getElementById('checkbox-container');
+                const selectedName = document.getElementById('selected-name'); 
+
+                data.forEach(item => {
+                    const label = document.createElement('label');
+                    label.style.display = 'block'; 
+
+                  
+                    const checkbox = document.createElement('input');
+                    checkbox.type = 'checkbox';
+                    checkbox.id = item.BusTypeID;
+                    checkbox.name = 'inspectionType';
+                    checkbox.value = item.BusType;
+
+                    checkbox.addEventListener('click', () => {
+                    
+                        document.querySelectorAll('input[name="inspectionType"]').forEach(cb => {
+                            if (cb !== checkbox) cb.checked = false;
+                        });
+
+                     
+                        selectedName.textContent = `Selected: ${checkbox.value}`;
+                    });
+
+             
+                    label.appendChild(checkbox);
+                    label.appendChild(document.createTextNode(` ${item.BusType}`));
+
+                    container.appendChild(label);
+                });
+            } catch (error) {
+                console.error("Error fetching data:", error);
+            }
+        }
+
+    
+        fetchBusTypeData();
+    </script>
+</body>
+
+</html>
