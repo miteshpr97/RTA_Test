@@ -160,65 +160,118 @@
         // }
 
 
-        
+
+        // function startVoiceRecognition() {
+        //     // Check if the browser supports Speech Recognition
+        //     if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+        //         alert('Your browser does not support voice recognition.');
+        //         return;
+        //     }
+
+        //     // Initialize Speech Recognition
+        //     const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+        //     recognition.lang = 'en-US'; // Set language
+
+        //     recognition.onstart = () => {
+        //         console.log('Voice recognition started. Try speaking.');
+        //     };
+
+        //     recognition.onresult = (event) => {
+        //         const speechResult = event.results[0][0].transcript.toLowerCase().trim();
+        //         console.log(`Recognized: "${speechResult}"`);
+
+        //         // Function to clean up and normalize strings
+        //         function normalizeString(str) {
+        //             return str.toLowerCase().trim().replace(/[^\w\s]/g, ''); // Remove punctuation
+        //         }
+
+        //         // Find and select the checkbox that matches the spoken input (case-insensitive)
+        //         let matchedCheckbox = false; // Track if a match was found
+        //         document.querySelectorAll('input[name="inspectionType"]').forEach(checkbox => {
+        //             if (normalizeString(checkbox.value) === normalizeString(speechResult)) { // Case-insensitive comparison
+        //                 checkbox.checked = true;
+        //                 matchedCheckbox = true;
+
+        //                 // Deselect other checkboxes
+        //                 document.querySelectorAll('input[name="inspectionType"]').forEach(cb => {
+        //                     if (cb !== checkbox) cb.checked = false;
+        //                 });
+
+        //                 // Update the selected name
+        //                 document.getElementById('selected-name').textContent = `Selected: ${checkbox.value}`;
+        //             }
+        //         });
+
+        //         if (!matchedCheckbox) {
+        //             alert(`No match found for "${speechResult}". Please try again.`);
+        //         }
+        //     };
+
+        //     recognition.onerror = (event) => {
+        //         console.error('Error occurred in recognition: ', event.error);
+        //         alert('An error occurred with voice recognition. Please try again.');
+        //     };
+
+        //     recognition.onend = () => {
+        //         console.log('Voice recognition ended.');
+        //     };
+
+        //     // Start listening for voice input
+        //     recognition.start();
+        // }
         function startVoiceRecognition() {
-            // Check if the browser supports Speech Recognition
-            if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
-                alert('Your browser does not support voice recognition.');
-                return;
-            }
+    if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+        alert('Your browser does not support voice recognition.');
+        return;
+    }
 
-            // Initialize Speech Recognition
-            const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-            recognition.lang = 'en-US'; // Set language
+    const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+    recognition.lang = 'en-US'; // Set language
+    recognition.interimResults = false; // Only final results
+    recognition.maxAlternatives = 1; // Single alternative for simplicity
 
-            recognition.onstart = () => {
-                console.log('Voice recognition started. Try speaking.');
-            };
+    recognition.onstart = () => {
+        console.log('Voice recognition started. Try speaking.');
+    };
 
-            recognition.onresult = (event) => {
-                const speechResult = event.results[0][0].transcript.toLowerCase().trim();
-                console.log(`Recognized: "${speechResult}"`);
+    recognition.onresult = (event) => {
+        const speechResult = event.results[0][0].transcript.toLowerCase().trim();
+        console.log(`Recognized: "${speechResult}"`);
 
-                // Function to clean up and normalize strings
-                function normalizeString(str) {
-                    return str.toLowerCase().trim().replace(/[^\w\s]/g, ''); // Remove punctuation
-                }
+        function normalizeString(str) {
+            return str.toLowerCase().trim().replace(/[^\w\s]/g, '');
+        }
 
-                // Find and select the checkbox that matches the spoken input (case-insensitive)
-                let matchedCheckbox = false; // Track if a match was found
-                document.querySelectorAll('input[name="inspectionType"]').forEach(checkbox => {
-                    if (normalizeString(checkbox.value) === normalizeString(speechResult)) { // Case-insensitive comparison
-                        checkbox.checked = true;
-                        matchedCheckbox = true;
+        let matchedCheckbox = false;
+        document.querySelectorAll('input[name="inspectionType"]').forEach(checkbox => {
+            if (normalizeString(checkbox.value) === normalizeString(speechResult)) {
+                checkbox.checked = true;
+                matchedCheckbox = true;
 
-                        // Deselect other checkboxes
-                        document.querySelectorAll('input[name="inspectionType"]').forEach(cb => {
-                            if (cb !== checkbox) cb.checked = false;
-                        });
-
-                        // Update the selected name
-                        document.getElementById('selected-name').textContent = `Selected: ${checkbox.value}`;
-                    }
+                document.querySelectorAll('input[name="inspectionType"]').forEach(cb => {
+                    if (cb !== checkbox) cb.checked = false;
                 });
 
-                if (!matchedCheckbox) {
-                    alert(`No match found for "${speechResult}". Please try again.`);
-                }
-            };
+                document.getElementById('selected-name').textContent = `Selected: ${checkbox.value}`;
+            }
+        });
 
-            recognition.onerror = (event) => {
-                console.error('Error occurred in recognition: ', event.error);
-                alert('An error occurred with voice recognition. Please try again.');
-            };
-
-            recognition.onend = () => {
-                console.log('Voice recognition ended.');
-            };
-
-            // Start listening for voice input
-            recognition.start();
+        if (!matchedCheckbox) {
+            alert(`No match found for "${speechResult}". Please try again.`);
         }
+    };
+
+    recognition.onerror = (event) => {
+        console.error('Error occurred in recognition: ', event.error);
+        alert('An error occurred with voice recognition. Please try again.');
+    };
+
+    recognition.onend = () => {
+        console.log('Voice recognition ended.');
+    };
+
+    recognition.start();
+}
 
         fetchBusTypeData();
     </script>
